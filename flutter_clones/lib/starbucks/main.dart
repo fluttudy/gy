@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'screens/signup_first.dart';
-import 'screens/signup_second.dart';
+import 'signup_first.dart';
+import 'signup_second.dart';
 
 void main() => runApp(MyApp());
 

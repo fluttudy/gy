@@ -222,7 +222,6 @@ class AddCouponState extends State<AddCoupon> {
             ],)
           ],
         ),),
-        Padding(padding: padding)
       ],
     );
   }

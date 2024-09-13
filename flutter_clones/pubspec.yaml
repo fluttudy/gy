@@ -65,6 +65,13 @@ flutter:
      - assets/images/starbucks/coupon_icon.png
      - assets/images/starbucks/cup.png
      - assets/images/starbucks/star.png
+     - assets/images/starbucks/card_1.png
+     - assets/images/starbucks/card_2.png
+     - assets/images/starbucks/card_3.png
+     - assets/images/starbucks/card_4.png
+     - assets/images/starbucks/card_5.png
+     - assets/images/starbucks/card_6.png
+     - assets/images/starbucks/card_7.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

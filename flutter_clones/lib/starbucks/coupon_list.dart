@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/coupon_screens.dart';
+import 'widgets/coupon_app_bar.dart';
 
 void main() => runApp(Coupon());
 
@@ -14,6 +15,10 @@ class Coupon extends StatefulWidget {
 class CouponState extends State<Coupon> {
   // 상태 변수
   int currentTabIndex = 0; // 0: 사용 가능한 쿠폰, 1: 쿠폰 히스토리, 2: 쿠폰 등록
+  double screenWidth = 0; // 화면 너비 변수
+  double screenHeight = 0; // 화면 높이 변수
+  double appBarHeight = 0.125; // 기본 AppBar 높이 비율
+  String title = 'Coupon';
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +26,14 @@ class CouponState extends State<Coupon> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
+    // AppBar 높이 계산
+    double calculatedAppBarHeight = screenHeight * appBarHeight;
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(screenHeight * 0.125),
+          preferredSize: Size.fromHeight(calculatedAppBarHeight),
           child: AppBar(
               backgroundColor: Colors.white,
               flexibleSpace: Column(
@@ -36,31 +44,43 @@ class CouponState extends State<Coupon> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(left: screenWidth * 0.03),
-                        // color: Colors.yellow,
-                        alignment: Alignment.centerLeft,
-                        width: screenWidth * 0.2,
-                        child: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF555555)),
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            currentTabIndex = 0;
+                            appBarHeight = 0.125;
+                            title = 'Coupon';
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(left: screenWidth * 0.03),
+                          // color: Colors.yellow,
+                          alignment: Alignment.centerLeft,
+                          width: screenWidth * 0.2,
+                          child: Icon(Icons.arrow_back_ios,
+                              color: Color(0xFF555555)),
+                        ),
                       ),
                       // SizedBox(width: screenWidth * 0.22,),
                       Text(
-                        'Coupon',
+                        title,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500),
                         textAlign: TextAlign.center,
                       ),
                       // SizedBox(width: screenWidth * 0.22,),
                       Container(
-                        // color: Colors.yellow,
-                        width: screenWidth * 0.2,
+                        padding: EdgeInsets.only(right: screenWidth * 0.02),
                         child: Row(
                           children: [
+                            if (currentTabIndex != 2
+                            )
                             GestureDetector(
                               onTap:(){
                                 setState(() {
                                   currentTabIndex = 2; // 쿠폰 등록 화면
+                                  appBarHeight = 0.07;
+                                  title = 'Coupon 등록';
                                 });
                               },
                               child: Icon(
@@ -69,7 +89,7 @@ class CouponState extends State<Coupon> {
                                 size: 32,
                               ),
                             ),
-                            SizedBox(width: screenWidth * 0.03),
+                            SizedBox(width: screenWidth * 0.01),
                             Icon(
                               Icons.info_outline,
                               color: Colors.grey[400],
@@ -83,7 +103,8 @@ class CouponState extends State<Coupon> {
                   Divider()
                 ],
               ),
-              bottom: PreferredSize(
+              bottom: currentTabIndex == 2 // currentTabIndex가 2일 때 bottom을 숨김
+                  ? null : PreferredSize(
                   preferredSize: Size.fromHeight(screenHeight * 0.01),
                   child: Column(
                     children: [
@@ -100,7 +121,7 @@ class CouponState extends State<Coupon> {
                               padding: EdgeInsets.all(screenWidth * 0.03),
                               width: screenWidth * 0.4,
                               decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: currentTabIndex == 0 ? Colors.green : Colors.white,
                                   border: Border.all(
                                       color: Color(0xff222222), width: 0.2),
                                   borderRadius: BorderRadius.only(
@@ -110,7 +131,7 @@ class CouponState extends State<Coupon> {
                               child: Center(
                                   child: Text(
                                 '사용 가능한 쿠폰',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: currentTabIndex == 0 ? Colors.white : Colors.grey),
                               )),
                             ),
                           ),
@@ -124,7 +145,7 @@ class CouponState extends State<Coupon> {
                               padding: EdgeInsets.all(screenWidth * 0.03),
                               width: screenWidth * 0.4,
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: currentTabIndex == 1 ? Colors.green : Colors.white,
                                   border: Border.all(
                                       color: Color(0xff222222), width: 0.2),
                                   borderRadius: BorderRadius.only(
@@ -134,7 +155,7 @@ class CouponState extends State<Coupon> {
                               child: Center(
                                   child: Text(
                                 '쿠폰 히스토리',
-                                style: TextStyle(color: Colors.grey),
+                                style: TextStyle(color: currentTabIndex == 1 ? Colors.white : Colors.grey),
                               )),
                             ),
                           ),

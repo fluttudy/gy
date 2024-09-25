@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/todo.dart';
 import '../providers/todo_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// provider값이 변경되면 ConsumerWidget으로 재빌드
+// TodoItem 클래스 작성
+// ConsumerWidget으로 재빌드
 class TodoItem extends ConsumerWidget {
   final Todo todo;
 
+  // 생성자: 외부에서 Todo객체를 받음
   TodoItem({required this.todo});
 
   // 수정 다이얼로그 메서드
@@ -73,6 +75,7 @@ class TodoItem extends ConsumerWidget {
     );
   }
 
+  //TodoItem 빌드
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Dismissible(
@@ -83,19 +86,6 @@ class TodoItem extends ConsumerWidget {
         final shouldDelete = await _showDeleteConfirmationDialog(context, ref, todo);
         return shouldDelete ?? false; // true를 반환하면 삭제, false면 삭제 취소
       },
-      background: Container(
-        color: Colors.red, // 스와이프 시 배경색
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Icon(Icons.delete, color: Colors.white),
-            // SizedBox(width: 10),
-            Text('삭제', style: TextStyle(color: Colors.white, fontSize: 16)),
-          ],
-        ),// 삭제 아이콘
-      ),
       child: ListTile(
         leading: Checkbox(
           value: todo.isDone,

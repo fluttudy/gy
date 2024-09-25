@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/todo_provider.dart';
 import 'widgets/todo_item.dart';
-import 'models/todo.dart';
 
 void main() => runApp(ProviderScope(child: MyApp()));
 
@@ -24,6 +23,7 @@ class TodoListScreen extends ConsumerWidget {
     final todos = ref.watch(todoProvider);
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Color(0xffFFD365),
@@ -35,7 +35,7 @@ class TodoListScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               return TodoItem(todo: todos[index]);
             })
-            : Text('할 일이 없습니다.'),
+            : Center(child: Text('할 일이 없습니다.')),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showAddTodoDialog(context, ref),
           child: Icon(Icons.add),

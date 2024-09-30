@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/place_provider.dart'; // placeProvider 경로를 맞게 수정하세요
 import '../models/place.dart'; // Place 모델 경로를 맞게 수정하세요
+import '../screens/place_detail_screen.dart';
 
 class BookmarkScreen extends ConsumerWidget {
   @override
@@ -23,7 +24,12 @@ class BookmarkScreen extends ConsumerWidget {
               subtitle: Text(favoritePlaces[index].address),
               onTap: () {
                 // 상세 정보 화면으로 이동
-                // 예: showModalBottomSheet 또는 Navigator.push
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlaceDetailScreen(place: favoritePlaces[index]),
+                  ),
+                );
               },
             ),
           );

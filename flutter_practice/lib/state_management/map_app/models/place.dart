@@ -8,7 +8,7 @@ class Place {
   final String phoneNumber;
   final double rating;
   final String photoUrl;
-  bool isFavorite;
+  final bool isFavorite;
 
   Place({
     required this.placeId, // 생성자에 placeId 추가

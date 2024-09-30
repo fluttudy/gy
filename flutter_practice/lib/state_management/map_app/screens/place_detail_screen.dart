@@ -10,19 +10,28 @@ class PlaceDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // placeProvider의 전체 상태를 watch
+    final places = ref.watch(placeProvider);
+
+    // 현재 place의 최신 상태
+    final currentPlace = places.firstWhere(
+            (p) => p.placeId == place.placeId,
+        orElse: () => place
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(place.name), // 장소 이름 표시
+        title: Text(currentPlace.name), // 장소 이름 표시
         // automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(
-              place.isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: place.isFavorite ? Colors.red : null,
+              currentPlace.isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: currentPlace.isFavorite ? Colors.red : null,
             ),
             onPressed: () {
               // 즐겨찾기 토글
-              ref.read(placeProvider.notifier).toggleFavorite(place);
+              ref.watch(placeProvider.notifier).toggleFavorite(currentPlace);
             },
           ),
         ],

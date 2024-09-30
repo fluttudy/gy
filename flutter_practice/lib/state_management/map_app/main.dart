@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'providers/place_provider.dart';
 import 'utils/place_search_bar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'screens/bookmark_screen.dart';
 
 void main() async{
   await dotenv.load(fileName: ".env");
@@ -43,6 +44,17 @@ class MapScreen extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('My Places'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.bookmark), // 북마크 아이콘
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BookmarkScreen()),
+              );
+            },
+          ),
+        ],
         backgroundColor: Colors.white,
       ),
       body: Stack(

@@ -8,6 +8,7 @@ class Place {
   final String phoneNumber;
   final double rating;
   final String photoUrl;
+  bool isFavorite;
 
   Place({
     required this.placeId, // 생성자에 placeId 추가
@@ -17,7 +18,31 @@ class Place {
     required this.phoneNumber,
     required this.rating,
     required this.photoUrl,
+    this.isFavorite = false
   });
+
+  // copyWith 메서드 추가
+  Place copyWith({
+    String? placeId,
+    String? name,
+    String? description,
+    String? address,
+    String? phoneNumber,
+    double? rating,
+    String? photoUrl,
+    bool? isFavorite,
+  }) {
+    return Place(
+      placeId: placeId ?? this.placeId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      address: address ?? this.address,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      rating: rating ?? this.rating,
+      photoUrl: photoUrl ?? this.photoUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 
   factory Place.fromJson(Map<String, dynamic> json) {
     return Place(
@@ -30,6 +55,7 @@ class Place {
       photoUrl: json['photos'] != null && json['photos'].isNotEmpty
           ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${json['photos'][0]['photo_reference']}&key=${dotenv.env['googleMapsApiKey']}'
           : '',
+      isFavorite: false,
     );
   }
 }

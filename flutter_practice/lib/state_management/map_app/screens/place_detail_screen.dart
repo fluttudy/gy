@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/place.dart';
+import '../providers/place_provider.dart';
 
-class PlaceDetailScreen extends StatelessWidget {
+class PlaceDetailScreen extends ConsumerWidget {
   final Place place;
 
   PlaceDetailScreen({required this.place});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(place.name), // 장소 이름 표시
+        // automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(
+              place.isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: place.isFavorite ? Colors.red : null,
+            ),
+            onPressed: () {
+              // 즐겨찾기 토글
+              ref.read(placeProvider.notifier).toggleFavorite(place);
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // 장소 사진
             if (place.photoUrl.isNotEmpty)

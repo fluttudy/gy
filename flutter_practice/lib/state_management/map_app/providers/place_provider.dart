@@ -9,35 +9,60 @@ class PlaceNotifier extends StateNotifier<List<Place>> {
 
   final String apiKey = dotenv.env['googleMapsApiKey']!;
 
-  // 장소 검색 메서드
-  // Future<void> searchPlaces(String query) async {
-  //
-  //   // final String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=$apiKey';
-  //   // 지역 제한
-  //   final String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&components=country:kr&key=$apiKey';
-  //
-  //   if (query.isEmpty) {
-  //     state = [];
-  //     return;
-  //   }
-  //
-  //   final response = await http.get(Uri.parse(url));
-  //   print('API response status: ${response.statusCode}'); // 응답 상태 로그
-  //
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     print('API response data: $data'); // 응답 데이터 로그
-  //     state =
-  //         (data['predictions'] as List).map((place) => Place.fromJson(place))
-  //             .toList();
-  //
-  //
-  //     print('============== $state =======================');
-  //   } else {
-  //     throw Exception('Failed to load places');
-  //   }
-  // }
+  // 즐겨찾기 목록
+  List<Place> favorites = [];
 
+  // 즐겨찾기 추가/제거 메서드
+  // void toggleFavorite(Place place) {
+  //   // isFavorite 상태를 토글
+  //   place.isFavorite = !place.isFavorite;
+  //
+  //   // 즐겨찾기 목록 업데이트
+  //   if (place.isFavorite) {
+  //     favorites.add(place);
+  //   } else {
+  //     favorites.removeWhere((p) => p.placeId == place.placeId);
+  //   }
+  //
+  //   // 상태 업데이트: 새로운 리스트 생성
+  //   state = state.map((p) {
+  //     // 같은 placeId를 가진 장소의 isFavorite 상태를 업데이트
+  //     if (p.placeId == place.placeId) {
+  //       return Place(
+  //         placeId: p.placeId,
+  //         name: p.name,
+  //         description: p.description,
+  //         address: p.address,
+  //         phoneNumber: p.phoneNumber,
+  //         rating: p.rating,
+  //         photoUrl: p.photoUrl,
+  //         isFavorite: place.isFavorite, // 업데이트된 isFavorite 상태
+  //       );
+  //     }
+  //     return p;
+  //   }).toList();
+  // }
+  void toggleFavorite(Place place) {
+    // isFavorite 상태를 토글
+    final updatedPlace = place.copyWith(isFavorite: !place.isFavorite);
+
+    // 즐겨찾기 목록 업데이트
+    if (updatedPlace.isFavorite) {
+      favorites.add(updatedPlace);
+    } else {
+      favorites.removeWhere((p) => p.placeId == updatedPlace.placeId);
+    }
+
+    // 상태 업데이트: 새로운 리스트 생성
+    state = state.map((p) {
+      if (p.placeId == place.placeId) {
+        return updatedPlace; // 업데이트된 Place 객체 반환
+      }
+      return p;
+    }).toList();
+  }
+
+  // 장소 검색 메서드
   Future<void> searchPlaces(String query) async {
     if (query.isEmpty) {
       state = [];
@@ -46,7 +71,7 @@ class PlaceNotifier extends StateNotifier<List<Place>> {
 
     final String apiKey = dotenv.env['googleMapsApiKey']!;
     final String url =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&components=country:kr&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$apiKey&language=ko';
 
     final response = await http.get(Uri.parse(url));
     print('API response status: ${response.statusCode}'); // 응답 상태 로그
@@ -56,7 +81,7 @@ class PlaceNotifier extends StateNotifier<List<Place>> {
       print('API response data: $data'); // 응답 데이터 로그
 
       // predictions에서 각 장소의 ID를 가져오고, 해당 ID로 상세 정보를 가져옴
-      final predictions = data['predictions'] as List;
+      final predictions = data['results'] as List;
 
       List<Place> places = [];
 
@@ -96,7 +121,7 @@ class PlaceNotifier extends StateNotifier<List<Place>> {
   Future<Place> fetchPlaceDetails(String placeId) async {
     final String apiKey = dotenv.env['googleMapsApiKey']!;
     final String url =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&language=ko&key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

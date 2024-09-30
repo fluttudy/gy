@@ -22,13 +22,13 @@ class PlaceSearchBar extends ConsumerWidget {
                 // 이전 타이머가 활성화되어 있으면 취소
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 // 새로운 타이머 시작
-                _debounce = Timer(const Duration(milliseconds: 500), () {
+                _debounce = Timer(const Duration(milliseconds: 200), () {
                   ref.read(placeProvider.notifier).searchPlaces(value);
                 });
               },
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Search Places',
+                labelText: '장소 검색',
                 prefixIcon: Icon(Icons.search),
                 fillColor: Colors.white,
                 filled: true,
@@ -56,14 +56,19 @@ class PlaceSearchBar extends ConsumerWidget {
                 return Card(
                   child: ListTile(
                     title: Text(places[index].name),
-                    subtitle: Text(places[index].description),
+                    subtitle: Text(places[index].address),
                     onTap: () {
                       // 선택된 장소의 상세 정보 화면으로 이동
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlaceDetailScreen(place: places[index]),
-                        ),
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.88,
+                            child: PlaceDetailScreen(
+                                place: places[index]),
+                          );
+                        },
                       );
                       _controller.clear();
                     },
